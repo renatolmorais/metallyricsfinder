@@ -1,0 +1,9 @@
+Metal Lyrics Finder
+Autor: Renato Lopes de Morais
+
+Metal Lyrics Finder é um pequeno buscador de letras de músicas de bandas de Heavy Metal.
+Ainda em versão preliminar, o programa não trata erros (se a busca falha, o programa dá erro).
+
+Sintaxe:
+./search.py "banda" "musica"
+
