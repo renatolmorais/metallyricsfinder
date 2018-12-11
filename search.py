@@ -4,19 +4,62 @@ import sys,os
 #import httplib
 import requests
 import re
+from getopt import getopt
+
+params = "b:m:p:"
 
 proxies = { "http_proxy": "http://proxy.almg.uucp:3128/", "https_proxy": "http://proxy.almg.uucp:3128/", "ftp_proxy": "http://proxy.almg.uucp:3128/" }
+
+def parse_cmdline( cmdline ):
+    ###
+    # ABC
+    # |||- has proxy
+    # ||-- has song name
+    # |--- has band name
+    # ABC = 000 => 0 --
+    # ABC = 001 => 1  |
+    # ABC = 010 => 2  |-- valores nao desejados
+    # ABC = 011 => 3  |
+    # ABC = 100 => 4  |
+    # ABC = 101 => 5 --
+    # ABC = 110 => 6 ---- valor desejado: tenho banda e musica, sem proxy
+    # ABC = 111 => 7 ---- valor desejado: tenho banda, musica e proxy
+    opt_values = 0 
+    args_list, args = getopt( cmdline, params )
+    band = ''
+    music = ''
+    proxy = ''
+    for (opt,arg) in args_list:
+        if opt == '-p':
+            opt_values |= 1
+            proxy = arg
+        elif opt == '-m':
+            opt_values |= 2
+            music = arg
+        elif opt == '-b':
+            opt_values |= 4
+            band = arg
+    return { 'opt': opt_values, 'band': band, 'music': music, 'proxy': proxy }
 
 def get_url( path ):
     host = "http://www.darklyrics.com"
     return requests.get( host + "/" + path, proxies=proxies )
 
 if __name__ == '__main__':
-
+        try:
+            args = sys.argv[1:]
+            parsing = parse_cmdline( args )
+            if parsing.get('opt') < 6: raise Exception('you forgot band and/or music option(s)')
+        except Exception as err:
+            print err.message
+            sys.exit( 1 )
+        #sys.exit(0)
 	#banda = raw_input("Digite o nome da banda: ")
-	banda = sys.argv[1]
+	#banda = sys.argv[1]
+        banda = parsing.get('band')
 	#musica = raw_input("Digite o nome da musica: ")
-	musica = sys.argv[2]
+	#musica = sys.argv[2]
+        musica = parsing.get('music')
         htmlpage = ''
 	
 	#banda = banda.lower()
