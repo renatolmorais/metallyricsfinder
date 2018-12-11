@@ -5,5 +5,7 @@ Metal Lyrics Finder é um pequeno buscador de letras de músicas de bandas de He
 Ainda em versão preliminar, o programa não trata erros (se a busca falha, o programa dá erro).
 
 Sintaxe:
-./search.py "banda" "musica"
+./search.py <-p "banda"> <-m "musica">
+
+OBS: nao se esqueca das aspas
 
