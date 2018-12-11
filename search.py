@@ -4,13 +4,14 @@ import sys,os
 #import httplib
 import requests
 import re
-from getopt import getopt
+from getopt import getopt, GetoptError
 
 params = "b:m:p:"
 
 proxies = { "http_proxy": "http://proxy.almg.uucp:3128/", "https_proxy": "http://proxy.almg.uucp:3128/", "ftp_proxy": "http://proxy.almg.uucp:3128/" }
 
 def parse_cmdline( cmdline ):
+    ''' throws GetoptError'''
     ###
     # ABC
     # |||- has proxy
@@ -39,6 +40,7 @@ def parse_cmdline( cmdline ):
         elif opt == '-b':
             opt_values |= 4
             band = arg
+   
     return { 'opt': opt_values, 'band': band, 'music': music, 'proxy': proxy }
 
 def get_url( path ):
@@ -50,6 +52,9 @@ if __name__ == '__main__':
             args = sys.argv[1:]
             parsing = parse_cmdline( args )
             if parsing.get('opt') < 6: raise Exception('you forgot band and/or music option(s)')
+        except GetoptError as err:
+            print 'option not recognized'
+            sys.exit(2)
         except Exception as err:
             print err.message
             sys.exit( 1 )
